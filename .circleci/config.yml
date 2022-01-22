@@ -1,0 +1,58 @@
+version: 2.1
+orbs:
+  docker: circleci/docker@2.0.1
+parameters:
+  release-tag:
+    description: Tag for Docker and Git used in the Release Workflow.
+    type: string
+    default: "<< pipeline.number >>.0"
+  environment:
+    type: string
+    default: production
+
+commands:
+  tag_commit:
+    parameters:
+      release-tag:
+        description: Tag for Docker and Git used in the Release Workflow.
+        type: string
+        default: "<< pipeline.number >>.0"
+      environment:
+        type: string
+        default: production
+    steps:
+    - run:
+        name: Tag current commit with << parameters.release-tag >>
+        command: |
+          echo "Tagging current commit with << parameters.release-tag >>"
+          git config user.email "dev-ops-test-ci@kutysam.com"
+          git config user.name "dev-ops-test"
+          git tag -a "<< parameters.release-tag >>" -m "<< parameters.release-tag >>"
+          git push origin --tags
+
+jobs:
+  tag_commit_update_image_tag:
+    docker:
+     - image: alpine/git
+    parameters:
+      release-tag:
+        description: Tag for Docker and Git used in the Release Workflow.
+        type: string
+        default: "<< pipeline.number >>.0"
+      environment:
+        type: string
+        default: production`
+    steps:
+      - add_ssh_keys
+      - checkout
+      - tag_commit
+
+workflows:
+  build-docker-image-only:
+    jobs:
+      - docker/publish:
+          image: kutysam/dev-ops-test
+          tag: '<< pipeline.number >>.0'
+      - tag_commit_update_image_tag:
+          requires:
+            - docker/publish
