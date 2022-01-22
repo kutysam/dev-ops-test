@@ -1,0 +1,17 @@
+# docker-compose file to be used for local development
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ./scripts/postgresql:/docker-entrypoint-initdb.d
+  webapp:
+    environment:
+      - DATABASE_URL=postgresql://db
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8085:3000"
+    depends_on:
+      - db
