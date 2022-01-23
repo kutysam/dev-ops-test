@@ -10,6 +10,21 @@ parameters:
     type: string
     default: production
 
+# Filters
+feature_filter: &feature_filter
+  filters:
+    tags:
+      only: /^v.*/
+    branches:
+      ignore: master
+
+release_filter: &release_filter
+  filters:
+    tags:
+      ignore: /.*/
+    branches:
+      only: master
+
 commands:
   tag_commit:
     parameters:
@@ -91,6 +106,8 @@ workflows:
       - docker/publish:
           image: kutysam/dev-ops-test
           tag: '<< pipeline.number >>.0'
+          <<: *release_filter
       - tag_commit_update_image_tag:
           requires:
             - docker/publish
+          <<: *release_filter
