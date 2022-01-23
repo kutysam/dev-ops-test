@@ -6,29 +6,23 @@ resource "google_service_account" "default" {
 }
 
 resource "google_container_cluster" "primary" {
-  name               = "sathish-cluster"
-  location           = "us-central1-a"
-  initial_node_count = 2
-  cluster_autoscaling {
-    enabled = true
-    resource_limits {
-      resource_type = "cpu"
-      minimum       = 1
-      maximum       = 16
+  name     = "sathish-cluster"
+  location = "us-central1-a"
+  node_pool {
+    name               = "default-pool"
+    initial_node_count = 1
+    node_config {
+      preemptible  = true
+      machine_type = "e2-medium"
+      # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+      service_account = google_service_account.default.email
+      oauth_scopes = [
+        "https://www.googleapis.com/auth/cloud-platform"
+      ]
     }
-    resource_limits {
-      resource_type = "memory"
-      minimum       = 4
-      maximum       = 16
+    autoscaling {
+      max_node_count = 5
+      min_node_count = 1
     }
-  }
-  node_config {
-    preemptible  = true
-    machine_type = "e2-medium"
-    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.default.email
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
   }
 }
