@@ -1,0 +1,24 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rubyweb
+  namespace: argocd
+spec:
+  destination:
+    namespace: rubyweb
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .helm/devopstest/
+    repoURL: "git@github.com:kutysam/dev-ops-test.git"
+    targetRevision: master
+    helm:
+      valueFiles:
+        - values-production.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
