@@ -29,6 +29,42 @@ commands:
           git config user.name "dev-ops-test"
           git tag -a "<< parameters.release-tag >>" -m "<< parameters.release-tag >>"
           git push origin --tags
+  install_yq:
+    parameters:
+      release-tag:
+        description: Tag for Docker and Git used in the Release Workflow.
+        type: string
+        default: "<< pipeline.number >>.0"
+      environment:
+        type: string
+        default: production
+    steps:
+    - run:
+        name: Install yq
+        command: |
+          wget -q https://github.com/mikefarah/yq/releases/download/v4.5.0/yq_linux_amd64
+          mv yq_linux_amd64 /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+  update_repo_image_tag:
+    parameters:
+      release-tag:
+        description: Tag for Docker and Git used in the Release Workflow.
+        type: string
+        default: "<< pipeline.number >>.0"
+      environment:
+        type: string
+        default: production
+    steps:
+    - run:
+          name: Updating release for argocd.
+          command: |
+            echo "Auto promoting << parameters.environment >> app to: << parameters.release-tag >>"
+            # git config user.email "dev-ops-test-ci@kutysam.com"
+            # git config user.name "dev-ops-test"
+            yq e ".image.tag = << parameters.release-tag >>" -i ".helm/devopstest/values-<< parameters.environment >>.yaml"
+            git add .helm/devopstest/values-<< parameters.environment >>.yaml
+            git commit -m "[ci skip] Update image tag to << parameters.release-tag >>"
+            git push --set-upstream origin $CIRCLE_BRANCH
 
 jobs:
   tag_commit_update_image_tag:
@@ -46,6 +82,8 @@ jobs:
       - add_ssh_keys
       - checkout
       - tag_commit
+      - install_yq
+      - update_repo_image_tag
 
 workflows:
   build-docker-image-only:
