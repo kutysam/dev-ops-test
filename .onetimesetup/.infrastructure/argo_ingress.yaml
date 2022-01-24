@@ -18,8 +18,8 @@ spec:
             name: argocd-server
             port:
               name: https
-    host: 1.2.3.4.nip.io
+    host: 35.184.220.54.nip.io
   tls:
   - hosts:
-    - 1.2.3.4.nip.io
+    - 35.184.220.54.nip.io
     secretName: argocd-secret

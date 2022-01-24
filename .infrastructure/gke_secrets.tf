@@ -1,10 +1,10 @@
 data "google_kms_key_ring" "my_apps_keyring" {
-  name     = "my-apps-keyring"
+  name     = "my-apps-keyring-devops-test-1"
   location = "us-central1"
 }
 
 data "google_kms_crypto_key" "my_apps_crypto_key" {
-  name     = "my-apps-crypto-key"
+  name     = "my-apps-crypto-key-devops-test-1"
   key_ring = data.google_kms_key_ring.my_apps_keyring.id
 }
 

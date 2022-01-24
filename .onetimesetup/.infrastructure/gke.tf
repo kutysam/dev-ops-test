@@ -6,7 +6,7 @@ resource "google_service_account" "default" {
 }
 
 resource "google_container_cluster" "primary" {
-  name     = "sathish-cluster"
+  name     = "sathish-cluster-1"
   location = "us-central1-a"
   node_pool {
     name               = "default-pool"
