@@ -9,7 +9,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
   hosts:
-    - host: 35.184.220.54.nip.io # Change accordingly
+    - host: 34.135.75.207.nip.io # Change accordingly
       paths:
         - path: /ruby
           pathType: Prefix
