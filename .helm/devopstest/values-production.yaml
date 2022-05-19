@@ -3,7 +3,7 @@ image:
   repository: kutysam/dev-ops-test
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "66.0"
+  tag: "69.0"
 ingress:
   enabled: true
   annotations:
