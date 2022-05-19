@@ -28,7 +28,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
 environment:
   - name: DATABASE_URL
-    value: postgresql://mypostgresql.default.svc
+    value: postgresql://mypostgresql.defaultx.svc
   - name: DATABASE_PASSWORD
     valueFrom:
       secretKeyRef:
